@@ -15,7 +15,9 @@ from dissect.target.plugins.apps.remoteaccess.remoteaccess import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from pathlib import Path
 
+    from dissect.target.helpers.fsutil import TargetPath
     from dissect.target.plugins.general.users import UserDetails
     from dissect.target.target import Target
 
@@ -97,8 +99,8 @@ class TeamViewerPlugin(RemoteAccessPlugin):
     def __init__(self, target: Target):
         super().__init__(target)
 
-        self.logfiles: set[tuple[str, UserDetails | None]] = set()
-        self.incoming_logfiles: set[str] = set()
+        self.logfiles: set[tuple[TargetPath, UserDetails | None]] = set()
+        self.incoming_logfiles: set[TargetPath] = set()
 
         # Find system service log files.
         for log_glob in self.SYSTEM_GLOBS:
@@ -119,6 +121,12 @@ class TeamViewerPlugin(RemoteAccessPlugin):
     def check_compatible(self) -> None:
         if not len(self.logfiles) and not len(self.incoming_logfiles):
             raise UnsupportedPluginError("No Teamviewer logs found on target")
+
+    def _get_paths(self) -> Iterator[Path]:
+        for item in self.logfiles:
+            yield item[0]
+
+        yield from self.incoming_logfiles
 
     @export(record=RemoteAccessLogRecord)
     def logs(self) -> Iterator[RemoteAccessLogRecord]:

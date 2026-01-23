@@ -13,6 +13,17 @@ if TYPE_CHECKING:
     from dissect.target.target import Target
 
 
+def test_anydesk_paths(target_win_users: Target, fs_win: VirtualFilesystem) -> None:
+    fs_win.map_file(
+        "ProgramData/AnyDesk/TestAnydesk.trace",
+        absolute_path("_data/plugins/apps/remoteaccess/anydesk/TestAnydesk.trace"),
+    )
+
+    paths = list(target_win_users.anydesk.get_paths())
+    assert len(paths) == 1
+    assert str(paths[0]) == "sysvol/ProgramData/AnyDesk/TestAnydesk.trace"
+
+
 def test_anydesk_plugin_log(target_win_users: Target, fs_win: VirtualFilesystem) -> None:
     fs_win.map_file(
         "ProgramData/AnyDesk/TestAnydesk.trace",

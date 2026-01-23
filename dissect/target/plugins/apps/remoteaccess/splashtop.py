@@ -16,6 +16,7 @@ from dissect.target.plugins.apps.remoteaccess.remoteaccess import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from pathlib import Path
 
     from dissect.target.helpers.fsutil import TargetPath
     from dissect.target.target import Target
@@ -60,6 +61,9 @@ class SplashtopPlugin(RemoteAccessPlugin):
     def check_compatible(self) -> None:
         if not self.log_files:
             raise UnsupportedPluginError("No Splashtop log files found on target")
+
+    def _get_paths(self) -> Iterator[Path]:
+        yield from self.log_files
 
     @export(record=RemoteAccessLogRecord)
     def logs(self) -> Iterator[RemoteAccessLogRecord]:

@@ -11,6 +11,19 @@ if TYPE_CHECKING:
     from dissect.target.target import Target
 
 
+def test_rustdesk_paths(target_win_users: Target, fs_win: VirtualFilesystem) -> None:
+    fs_win.map_file(
+        "Windows/ServiceProfiles/LocalService/AppData/Roaming/RustDesk/log/server/TestRustdesk.log",
+        absolute_path("_data/plugins/apps/remoteaccess/rustdesk/TestRustdesk.log"),
+    )
+
+    paths = list(target_win_users.rustdesk.get_paths())
+    assert len(paths) == 1
+    assert (
+        str(paths[0]) == "c:/Windows/ServiceProfiles/LocalService/AppData/Roaming/RustDesk/log/server/TestRustdesk.log"
+    )
+
+
 def test_rustdesk_plugin_log(target_win_users: Target, fs_win: VirtualFilesystem) -> None:
     fs_win.map_file(
         "Windows/ServiceProfiles/LocalService/AppData/Roaming/RustDesk/log/server/TestRustdesk.log",

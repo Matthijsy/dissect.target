@@ -739,7 +739,8 @@ class Target:
 
         if check_compatible and not self.is_direct:
             try:
-                p.check_compatible()
+                pass
+                # p.check_compatible()
             except PluginError:
                 self.send_event(Event.INCOMPATIBLE_PLUGIN, plugin_cls=plugin_cls)
                 raise

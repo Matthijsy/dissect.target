@@ -39,6 +39,12 @@ def target_splashtop(target_win_users: Target, fs_win: VirtualFilesystem) -> Ite
         yield target_win_users
 
 
+def test_splashtop_paths(target_splashtop: Target) -> None:
+    paths = list(target_splashtop.splashtop.get_paths())
+    assert len(paths) == 1
+    assert str(paths[0]) == f"sysvol/{SPLASHTOP_LOG_PATH}"
+
+
 def test_splashtop_plugin_log(target_splashtop: Target) -> None:
     records = list(target_splashtop.splashtop.logs())
     assert len(records) == 384
